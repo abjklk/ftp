@@ -9,6 +9,7 @@
 #include<sys/stat.h>
 #include<sys/sendfile.h>
 #include<fcntl.h>
+#include <time.h>
 
 int main(int argc,char *argv[])
 {
@@ -16,6 +17,8 @@ int main(int argc,char *argv[])
     struct sockaddr_in server;
     struct stat obj;
     int sock;
+    time_t stime,etime;
+    double tt;
     int choice;
     char buf[100], command[5], filename[20], *f;
     int k, size, status;
@@ -56,6 +59,7 @@ int main(int argc,char *argv[])
             printf("\n\nNo such file on the remote directory\n\n");
             break;
         }
+        stime=clock();
         f = malloc(size);
         recv(sock, f, size, 0);
         while(1)
@@ -68,6 +72,9 @@ int main(int argc,char *argv[])
         }
         write(filehandle, f, size, 0);
         close(filehandle);
+        etime=clock();
+        tt=((double)(etime-stime))/CLOCKS_PER_SEC;
+        printf("%f",tt);
         strcpy(buf, "cat ");
         strcat(buf, filename);
         system(buf);
